@@ -2,11 +2,14 @@ package config
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
+
+var wd_conf string
 
 type AppConfig struct {
 	Server Server `yaml:"server"`
@@ -27,12 +30,18 @@ type Timeout struct {
 	Idle   int `yaml:"idle"`
 }
 
-func GetAppConfig() (*AppConfig, error) {
-	wd, err := os.Getwd()
+func init() {
+	var err error
+	wd_conf, err = os.Getwd()
 	if err != nil {
-		return nil, err
+		log.Fatal(err.Error())
 	}
-	b, err := ioutil.ReadFile(filepath.Join(wd, "pkg", "config", "app.yml"))
+	wd_conf = filepath.Join(wd_conf, "pkg", "config")
+}
+
+func GetAppConfig() (*AppConfig, error) {
+	var err error
+	b, err := ioutil.ReadFile(filepath.Join(wd_conf, "app.yml"))
 	if err != nil {
 		return nil, err
 	}
@@ -43,4 +52,8 @@ func GetAppConfig() (*AppConfig, error) {
 	}
 
 	return app, err
+}
+
+func GetDBConfig() {
+
 }

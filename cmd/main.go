@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/tugsadole/wvatha_indexer/pkg/config"
+	"github.com/tugsadole/wvatha_indexer/pkg/db/badger"
 )
 
 const (
@@ -66,6 +69,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	wd = filepath.Join(wd, "pkg", "db")
+	names, ext, err := badger.Discover(wd)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	fmt.Println(conf)
+	fmt.Println(wd)
+	if ext {
+		fmt.Println(names)
+	}
 }

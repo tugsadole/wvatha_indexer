@@ -2,11 +2,11 @@ package config
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetAppConfig(t *testing.T) {
 	_, err := GetAppConfig()
-	if err != nil {
-		t.Error(err.Error())
-	}
+	assert.Error(t, err, err.Error())
 }

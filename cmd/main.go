@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net"
 	"os"
 	"path/filepath"
 
@@ -52,6 +54,11 @@ const (
 // 000000-000000-000000-000000-000000-00
 
 // 00000-00000-00000-00000-00000-00000-00
+func echoServer(c net.Conn) {
+	log.Printf("Client connected [%s]", c.RemoteAddr().Network())
+	io.Copy(c, c)
+	c.Close()
+}
 
 func main() {
 
@@ -82,5 +89,14 @@ func main() {
 	fmt.Println(wd)
 	if ext {
 		fmt.Println(names)
+	}
+	const SockAddr = "/tmp/unixSocket"
+	conn, err := net.Dial("unix", SockAddr)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	_, err = conn.Write([]byte("Hello"))
+	if err != nil {
+		log.Fatal(err.Error())
 	}
 }
